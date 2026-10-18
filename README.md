@@ -1,59 +1,122 @@
-# TaskflowWeb
+# TaskFlow Web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.19.
+A task management frontend built with Angular, TypeScript, and Tailwind CSS. It connects to the [TaskFlow API](https://github.com/kkovaycin/taskflow-api) to create, display, update, and delete tasks.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- Task cards showing the title, description, assignee, status, and priority.
+- A shared reactive form for creating and editing tasks.
+- Required title and assignee validation, including whitespace-only input checks.
+- Deletion confirmation with a cancel option.
+- Loading, empty-list, and request-error states.
+- Disabled actions while a request is in progress.
+- Responsive layouts, shared color variables, and a custom favicon.
+- Prettier formatting scripts.
 
-```bash
-ng serve
+## Technologies
+
+- Angular standalone components and signals
+- TypeScript
+- Angular Reactive Forms and HttpClient
+- RxJS
+- Tailwind CSS 4 and PostCSS
+- Prettier
+
+## Requirements
+
+- Node.js 24.x and npm 11.x
+- Git
+- The TaskFlow backend running on port `3000`
+
+The project was developed using Node.js `24.14.1` and npm `11.11.0`. The commands below use Windows PowerShell; on other platforms, use `npm` in place of `npm.cmd`.
+
+## Run locally
+
+Clone both repositories into the same parent directory:
+
+```powershell
+git clone https://github.com/kkovaycin/taskflow-api.git
+git clone https://github.com/kkovaycin/taskflow-web.git
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open two terminals in that parent directory. Keep both servers running while using the application.
 
-## Code scaffolding
+### Terminal 1: backend
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```powershell
+Set-Location .\taskflow-api
+npm.cmd ci
+npm.cmd run dev
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The API runs at `http://localhost:3000`. Its health endpoint is `http://localhost:3000/health`.
 
-```bash
-ng generate --help
+### Terminal 2: frontend
+
+```powershell
+Set-Location .\taskflow-web
+npm.cmd ci
+npm.cmd start
 ```
 
-## Building
+Open `http://localhost:4200`. If Angular offers another port because `4200` is occupied, open the `Local` URL printed in the terminal.
 
-To build the project run:
+Stopping the backend while leaving the frontend running causes task requests to fail. Start the backend again and select **Refresh tasks** to retry.
 
-```bash
-ng build
+## API configuration
+
+The frontend reads the relative API base URL from `src/environments/environment.ts`:
+
+```typescript
+export const environment = {
+  apiUrl: "/api",
+};
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+The `start` script loads `proxy.conf.json`. During local development, the proxy forwards `/api/**` requests to `http://localhost:3000` and removes the `/api` prefix.
 
-## Running unit tests
+| Frontend request        | Backend endpoint    | Purpose       |
+| ----------------------- | ------------------- | ------------- |
+| `GET /api/tasks`        | `GET /tasks`        | List tasks    |
+| `POST /api/tasks`       | `POST /tasks`       | Create a task |
+| `PATCH /api/tasks/:id`  | `PATCH /tasks/:id`  | Update a task |
+| `DELETE /api/tasks/:id` | `DELETE /tasks/:id` | Delete a task |
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+The backend stores tasks in its own `data/tasks.json` file. Saving a task uses the ID and timestamps returned by the API.
 
-```bash
-ng test
-```
+## Project structure
 
-## Running end-to-end tests
+| Path                                   | Responsibility                                  |
+| -------------------------------------- | ----------------------------------------------- |
+| `src/app/pages/dashboard/`             | Task loading, page state, and CRUD coordination |
+| `src/app/components/task-card/`        | Task display and edit/delete events             |
+| `src/app/components/task-form/`        | Task creation/editing form and validation       |
+| `src/app/interfaces/task.interface.ts` | Task types and request models                   |
+| `src/app/services/task.service.ts`     | HTTP requests to the API                        |
+| `src/environments/environment.ts`      | API base URL                                    |
+| `src/styles.css`                       | Tailwind imports and shared design tokens       |
+| `proxy.conf.json`                      | Local development proxy                         |
+| `public/`                              | Static assets, including the favicon            |
 
-For end-to-end (e2e) testing, run:
+## Development commands
 
-```bash
-ng e2e
-```
+| Command                    | Purpose                                            |
+| -------------------------- | -------------------------------------------------- |
+| `npm.cmd start`            | Start the development server with the API proxy    |
+| `npm.cmd run build`        | Create the production build in `dist/taskflow-web` |
+| `npm.cmd run format`       | Format source files                                |
+| `npm.cmd run format:check` | Check source formatting                            |
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Manual verification
 
-## Additional Resources
+With both servers running:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1. Select **New task**, enter a title and assignee, and create a task.
+2. Check that its details appear on a card.
+3. Select **Edit**, change the title or status, and select **Save changes**.
+4. Reload the page and confirm that the saved changes persist.
+5. Select **Delete**, then **Cancel**, and confirm that the task remains.
+6. Select **Delete**, then **Yes, delete**, and confirm that the task stays deleted after a reload.
+7. Submit a form with a blank title or assignee and check that validation messages appear.
+
+The backend source is maintained in the [TaskFlow API repository](https://github.com/kkovaycin/taskflow-api).
