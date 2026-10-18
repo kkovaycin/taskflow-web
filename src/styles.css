@@ -1,0 +1,22 @@
+@import 'tailwindcss';
+
+/* Shared colors and typography used throughout the application. */
+@theme static {
+  --color-background: #f5f7fb;
+  --color-surface: #ffffff;
+  --color-text: #172134;
+  --color-muted: #64748b;
+  --color-border: #e2e8f0;
+  --color-primary: #5145cd;
+
+  --font-sans: 'Segoe UI', Arial, sans-serif;
+}
+
+@layer base {
+  body {
+    min-height: 100vh;
+    background: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+  }
+}

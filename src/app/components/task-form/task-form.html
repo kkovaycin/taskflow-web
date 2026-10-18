@@ -1,1 +1,109 @@
-<p>task-form works!</p>
+<form
+  class="rounded-2xl border border-border bg-surface p-5 shadow-sm sm:p-6"
+  [formGroup]="form"
+  (ngSubmit)="submit()"
+  aria-labelledby="task-form-heading"
+>
+  <h2 id="task-form-heading" class="mb-6 text-xl font-semibold">Create a task</h2>
+
+  <fieldset class="grid min-w-0 grid-cols-1 gap-5 sm:grid-cols-2" [disabled]="submitting()">
+    <label for="task-title" class="flex min-w-0 flex-col gap-2 text-sm font-semibold">
+      Title
+
+      <input
+        id="task-title"
+        type="text"
+        formControlName="title"
+        aria-required="true"
+        class="w-full rounded-lg border border-border bg-surface px-3 py-3 font-normal outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+      />
+
+      @if (form.controls.title.touched && form.controls.title.invalid) {
+        <span class="text-sm font-normal text-red-700"> Title is required. </span>
+      }
+    </label>
+
+    <label for="task-assignee" class="flex min-w-0 flex-col gap-2 text-sm font-semibold">
+      Assigned to
+
+      <input
+        id="task-assignee"
+        type="text"
+        formControlName="assignee"
+        aria-required="true"
+        class="w-full rounded-lg border border-border bg-surface px-3 py-3 font-normal outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+      />
+
+      @if (form.controls.assignee.touched && form.controls.assignee.invalid) {
+        <span class="text-sm font-normal text-red-700"> Assignee is required. </span>
+      }
+    </label>
+
+    <label
+      for="task-description"
+      class="flex min-w-0 flex-col gap-2 text-sm font-semibold sm:col-span-2"
+    >
+      Description
+
+      <textarea
+        id="task-description"
+        rows="3"
+        formControlName="description"
+        class="w-full resize-y rounded-lg border border-border bg-surface px-3 py-3 font-normal outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+      ></textarea>
+    </label>
+
+    <label for="task-status" class="flex min-w-0 flex-col gap-2 text-sm font-semibold">
+      Status
+
+      <select
+        id="task-status"
+        formControlName="status"
+        class="w-full rounded-lg border border-border bg-surface px-3 py-3 font-normal outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+      >
+        <option value="pending">Pending</option>
+        <option value="in_progress">In progress</option>
+        <option value="completed">Completed</option>
+      </select>
+    </label>
+
+    <label for="task-priority" class="flex min-w-0 flex-col gap-2 text-sm font-semibold">
+      Priority
+
+      <select
+        id="task-priority"
+        formControlName="priority"
+        class="w-full rounded-lg border border-border bg-surface px-3 py-3 font-normal outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+      >
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </label>
+  </fieldset>
+
+  @if (errorMessage()) {
+    <p class="mt-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+      {{ errorMessage() }}
+    </p>
+  }
+
+  <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+    <button
+      type="button"
+      class="cursor-pointer rounded-xl border border-border bg-surface px-5 py-3 text-sm font-semibold transition-colors enabled:hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60"
+      (click)="cancelled.emit()"
+      [disabled]="submitting()"
+    >
+      Cancel
+    </button>
+
+    <button
+      type="submit"
+      class="cursor-pointer rounded-xl border border-primary bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors enabled:hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60"
+      [disabled]="submitting()"
+    >
+      {{ submitting() ? 'Saving...' : 'Create task' }}
+    </button>
+  </div>
+</form>
