@@ -13,6 +13,14 @@ A task management frontend built with Angular, TypeScript, and Tailwind CSS. It 
 - Responsive layouts, shared color variables, and a custom favicon.
 - Prettier formatting scripts.
 
+
+## Application Screenshot
+
+The TaskFlow dashboard provides a centralized interface for managing project tasks, assigning responsibilities, setting priorities, and tracking progress.
+
+![TaskFlow Dashboard](screenshots/taskflow-dashboard.png)
+  
+
 ## Technologies
 
 - Angular standalone components and signals
